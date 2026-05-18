@@ -13,6 +13,9 @@ plugins {
 	id 'java'
     id 'eclipse'
     id 'idea'
+    id 'checkstyle'
+    id 'jacoco'
+    id 'com.github.spotbugs' version '6.0.18'
 }
 
 apply plugin: 'net.serenity-bdd.serenity-gradle-plugin'
@@ -80,4 +83,61 @@ tasks.named('test') {
         events 'passed', 'skipped', 'failed'
         showStandardStreams = false
     }
+}
+
+// =====================================================================
+// Analisis estatico - Checkstyle (convenciones)
+// =====================================================================
+checkstyle {
+    toolVersion = '10.17.0'
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    ignoreFailures = true          // No bloquear el build por estilo
+    maxWarnings = 1000
+    showViolations = true
+}
+
+// =====================================================================
+// Analisis estatico - SpotBugs (bugs comunes)
+// =====================================================================
+spotbugs {
+    toolVersion = '4.8.6'
+    ignoreFailures = true          // Solo reporta, no bloquea
+    effort = 'default'
+    reportLevel = 'medium'
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
+    reports {
+        html.required = true
+        xml.required = false
+    }
+}
+
+// =====================================================================
+// Cobertura - JaCoCo
+// =====================================================================
+jacoco {
+    toolVersion = '0.8.11'
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    sourceDirectories.setFrom(files('src/main/java', 'src/test/java'))
+    classDirectories.setFrom(
+        fileTree(dir: 'build/classes/java/main', exclude: ['**/exceptions/Exception.class','**/integrations/Integration.class','**/userinterfaces/UserInterface.class','**/tasks/Task.class','**/questions/Question.class','**/interactions/Interaction.class','**/models/Model.class','**/utils/Util.class']),
+        fileTree(dir: 'build/classes/java/test')
+    )
+}
+
+// =====================================================================
+// Tarea agregada de calidad
+// =====================================================================
+tasks.register('qualityReports') {
+    group = 'verification'
+    description = 'Genera reportes de Checkstyle, SpotBugs y JaCoCo'
+    dependsOn 'checkstyleMain', 'checkstyleTest', 'spotbugsMain', 'jacocoTestReport'
 }

@@ -87,6 +87,16 @@ public class StepDefinition {
         OnStage.theActorInTheSpotlight().attemptsTo(FillBillingDetails.withInvalidEmail(data, emailInvalido));
     }
 
+    @When("diligencia los datos de facturación con email {string}")
+    public void diligenciaConEmail(String email) {
+        BillingData data = baseBillingData();
+        if (email == null || email.isEmpty()) {
+            OnStage.theActorInTheSpotlight().attemptsTo(FillBillingDetails.withEmptyEmail(data));
+        } else {
+            OnStage.theActorInTheSpotlight().attemptsTo(FillBillingDetails.withInvalidEmail(data, email));
+        }
+    }
+
     private BillingData baseBillingData() {
         return BillingData.builder()
                 .nombre("Anderson")

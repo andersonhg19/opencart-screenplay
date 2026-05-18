@@ -33,13 +33,13 @@ public class AddProductFromCategory implements Task {
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
                 Open.url(Categories.urlOf(categoryName)),
-                Pause.briefly(),
-                WaitUntil.the(CategoryUI.PRODUCT_LINK.of(productName), isVisible()).forNoMoreThan(15).seconds(),
+                Pause.forMillis(3000),
+                WaitUntil.the(CategoryUI.PRODUCT_LINK.of(productName), isVisible()).forNoMoreThan(30).seconds(),
                 Scroll.to(CategoryUI.PRODUCT_LINK.of(productName)),
                 Pause.briefly(),
                 Click.on(CategoryUI.PRODUCT_LINK.of(productName)),
-                Pause.briefly(),
-                WaitUntil.the(ProductUI.ADD_TO_CART_BUTTON, isVisible()).forNoMoreThan(15).seconds(),
+                Pause.forMillis(2500),
+                WaitUntil.the(ProductUI.ADD_TO_CART_BUTTON, isVisible()).forNoMoreThan(30).seconds(),
                 Scroll.to(ProductUI.ADD_TO_CART_BUTTON),
                 Pause.briefly(),
                 Click.on(ProductUI.ADD_TO_CART_BUTTON),

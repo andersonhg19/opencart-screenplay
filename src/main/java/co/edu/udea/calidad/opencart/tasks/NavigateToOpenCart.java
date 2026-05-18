@@ -17,7 +17,7 @@ public class NavigateToOpenCart implements Task {
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
                 Open.browserOn().thePageNamed("pages.opencartUrl"),
-                Pause.briefly()
+                Pause.forMillis(3000)
         );
     }
 }

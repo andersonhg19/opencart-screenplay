@@ -120,3 +120,42 @@ start target\site\serenity\index.html
 ## Notas de socialización
 
 El profesor evalúa la socialización con 55 puntos sobre 100. La rúbrica menciona específicamente "uso del Delay o sleep entre paso y paso para observar la prueba con detenimiento". Por eso este proyecto incluye una Task reutilizable `Pause` con factories `briefly()` y `forMillis(long)` que se llama entre cada acción importante. En el reporte Serenity aparece como un step diferenciado y durante la demo en vivo el evaluador puede ver cada paso al ejecutarse con una pausa de aproximadamente 1.5 a 4 segundos.
+
+## Análisis estático y cobertura
+
+El `build.gradle` integra tres herramientas de análisis de la Clase 8:
+
+- **Checkstyle 10.17.0** — Convenciones de estilo y nomenclatura. Config: `config/checkstyle/checkstyle.xml`.
+- **SpotBugs 4.8.6** — Detección de bugs comunes en el bytecode (NullPointer, recursos sin cerrar, comparación de strings, etc.).
+- **JaCoCo 0.8.11** — Cobertura de código de las clases Java (cobertura de sentencia y rama).
+
+```powershell
+# Genera los tres reportes de una vez
+gradle qualityReports
+
+# Reportes individuales
+start build\reports\checkstyle\main.html
+start build\reports\spotbugs\main.html
+start build\reports\jacoco\test\html\index.html
+```
+
+## CI/CD con GitHub Actions
+
+El proyecto incluye un workflow en `.github/workflows/test.yml` que se dispara en cada push a `main` o `develop` y en pull requests. El workflow:
+
+1. Setea Java 17 y Gradle 8.14.2.
+2. Instala Chrome stable.
+3. Fuerza modo headless en `serenity.conf`.
+4. Ejecuta `gradle test`.
+5. Publica como artefactos el reporte agregado de Serenity, el JSON de Cucumber y los resultados JUnit.
+
+Esto cubre material de la Clase 11 (Prácticas CI/CD): ejecución automática, publicación de evidencia y feedback rápido.
+
+## OpenCart local con Docker
+
+Para correr la suite contra una instancia totalmente controlada (sin Cloudflare ni dependencias externas), se incluye `docker-compose.yml` con OpenCart 4 + MariaDB. Ver la guía completa en `docs/OPENCART_LOCAL.md`.
+
+```powershell
+docker compose up -d
+# luego cambiar serenity.conf y Categories.java para apuntar a http://localhost:8080
+```

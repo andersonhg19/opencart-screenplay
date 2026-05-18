@@ -40,18 +40,18 @@ public class CheckProductAvailability implements Task {
         );
         if (productName == null) {
             actor.attemptsTo(
-                    WaitUntil.the(CategoryUI.FIRST_PRODUCT_NAME, isVisible()).forNoMoreThan(15).seconds(),
+                    WaitUntil.the(CategoryUI.FIRST_PRODUCT_NAME, isVisible()).forNoMoreThan(30).seconds(),
                     Click.on(CategoryUI.FIRST_PRODUCT_NAME)
             );
         } else {
             actor.attemptsTo(
-                    WaitUntil.the(CategoryUI.PRODUCT_LINK.of(productName), isVisible()).forNoMoreThan(15).seconds(),
+                    WaitUntil.the(CategoryUI.PRODUCT_LINK.of(productName), isVisible()).forNoMoreThan(30).seconds(),
                     Click.on(CategoryUI.PRODUCT_LINK.of(productName))
             );
         }
         actor.attemptsTo(
-                Pause.briefly(),
-                WaitUntil.the(ProductUI.STOCK_STATUS, isVisible()).forNoMoreThan(15).seconds(),
+                Pause.forMillis(2500),
+                WaitUntil.the(ProductUI.STOCK_STATUS, isVisible()).forNoMoreThan(30).seconds(),
                 Pause.briefly()
         );
     }
